@@ -1,0 +1,14 @@
+{
+  "name": "campo-hoy-demo",
+  "private": true,
+  "version": "8.7.0",
+  "scripts": {
+    "check": "node --check app.js && node --check supabase-lite.js && node --check sw.js && node --test",
+    "test": "node --test",
+    "build": "node scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module"
+}

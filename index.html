@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#174f35">
+  <meta name="description" content="Control integral de tambos, recría, ganadería y hacienda.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=8.6">
+  <title>Campo Hoy Integral</title>
+</head>
+<body>
+
+  <section id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <div class="brand">Campo Hoy</div>
+      <h1>Ingresar a la aplicación</h1>
+      <p>La información del campo está protegida. Ingresá con tu usuario de Supabase. Después del primer ingreso, también abre sin señal en este dispositivo. El acceso sigue protegido.</p>
+      <div class="form-stack">
+        <input id="gateEmail" type="email" autocomplete="email" placeholder="Correo">
+        <input id="gatePassword" type="password" autocomplete="current-password" placeholder="Contraseña">
+      </div>
+      <div class="button-row">
+        <button id="gateLoginBtn" class="button primary">Ingresar</button>
+        <button id="gateSignupBtn" class="button secondary">Crear usuario</button>
+      </div>
+      <button id="demoLoginBtn" class="button demo-entry" type="button">Ingresar a la demo</button>
+      <p class="demo-note">Acceso local con datos ficticios. No requiere credenciales ni modifica información productiva real.</p>
+      <div id="gateMessage" class="auth-message"></div>
+    </div>
+  </section>
+
+  <div id="protectedApp" class="protected-app hidden">
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand">Campo Hoy</div>
+      <div class="subtitle">Control integral de la explotación</div>
+    </div>
+    <div class="top-actions">
+      <span id="networkStatus" class="pill">Comprobando…</span>
+      <button id="installBtn" class="button ghost compact hidden">Instalar</button>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="Secciones">
+    <button data-view="control" class="active">Control</button>
+    <button data-view="agenda">Agenda</button>
+    <button data-view="tambos">Tambos</button>
+    <button data-view="ino">Ino · Recría</button>
+    <button data-view="hacienda">Hacienda</button>
+    <button data-view="trazabilidad">Trazabilidad</button>
+    <button data-view="nacimientos">Nacimientos</button>
+    <button data-view="movimientos">Movimientos</button>
+    <button data-view="sanidad">Sanidad</button>
+    <button data-view="datos">Datos y nube</button>
+  </nav>
+
+  <main>
+    <section id="control" class="view active">
+      <div class="page-head">
+        <div><div class="eyebrow">TABLERO OPERATIVO</div><h1>Qué hay que hacer y qué está pasando</h1><p>Partos, tactos, sanidad, movimientos y stock en una sola pantalla.</p></div>
+        <button class="button primary" data-action="new-task">+ Nueva tarea</button>
+      </div>
+      <div class="filterbar sticky-filter">
+        <select id="controlFarm"><option value="">Todos los establecimientos</option><option>Ino</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="controlHorizon"><option value="30">Próximos 30 días</option><option value="60">Próximos 60 días</option><option value="90" selected>Próximos 90 días</option></select>
+        <button class="button secondary" data-view-jump="agenda">Ver agenda completa</button>
+      </div>
+      <div id="controlKpis" class="kpi-grid"></div>
+      <div class="grid two">
+        <article class="panel"><div class="panel-head"><div><h2>Agenda prioritaria</h2><p>Tareas pendientes ordenadas por vencimiento.</p></div></div><div id="controlAgenda"></div></article>
+        <article class="panel"><div class="panel-head"><div><h2>Próximos partos</h2><p>Tambos y vaquillonas de Ino, con la misma fuente en todo el sistema.</p></div></div><div id="controlCalving"></div></article>
+      </div>
+      <article class="panel"><div class="panel-head"><div><h2>Hacienda por establecimiento</h2><p>Stock declarado y composición por categoría.</p></div><button class="button ghost compact" data-view-jump="hacienda">Abrir hacienda</button></div><div id="controlStock" class="farm-grid"></div></article>
+      <div class="grid two">
+        <article class="panel"><div class="panel-head"><div><h2>Flujo reciente</h2><p>Movimientos productivos del año.</p></div></div><div id="controlFlow"></div></article>
+        <article class="panel"><div class="panel-head"><div><h2>Calidad de datos</h2><p>Inconsistencias que deben estar visibles, no escondidas.</p></div></div><div id="controlAudit"></div></article>
+      </div>
+    </section>
+
+    <section id="agenda" class="view">
+      <div class="page-head"><div><div class="eyebrow">TRABAJO DIARIO</div><h1>Agenda y tareas</h1><p>Podés crear, editar, completar, reactivar, ocultar o eliminar tareas.</p></div><button class="button primary" data-action="new-task">+ Nueva tarea</button></div>
+      <div class="filterbar">
+        <input id="taskSearch" placeholder="Buscar tarea, animal o detalle">
+        <select id="taskFarm"><option value="">Todos los establecimientos</option><option>Ino</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="taskType"><option value="">Todos los tipos</option><option value="parto">Parto</option><option value="tacto">Tacto</option><option value="secado">Secado</option><option value="sanidad">Sanidad</option><option value="movimiento">Movimiento</option><option value="rechazo">Rechazo / baja</option><option value="general">General</option></select>
+        <select id="taskStatus"><option value="open">Pendientes + en curso</option><option value="pending">Pendientes</option><option value="in_progress">En curso</option><option value="done">Realizadas</option><option value="dismissed">Ocultas</option><option value="all">Todas</option></select>
+        <select id="taskHorizon"><option value="all">Todas las fechas</option><option value="7">7 días</option><option value="30" selected>30 días</option><option value="60">60 días</option><option value="90">90 días</option><option value="overdue">Vencidas</option></select>
+      </div>
+      <div id="taskKpis" class="kpi-grid small"></div>
+      <div id="taskList" class="task-list"></div>
+    </section>
+
+    <section id="tambos" class="view">
+      <div class="page-head"><div><div class="eyebrow">INO 2 + LOS 3 HNOS.</div><h1>Control de los dos tambos</h1><p>Rodeo activo, reproducción, lactancia, secado, partos y rechazos.</p></div></div>
+      <div class="filterbar">
+        <select id="dairyFarm"><option value="">Consolidado</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="dairyCategory"><option value="">Todas las categorías</option><option value="ordene">Ordeñe</option><option value="seca">Secas</option><option value="vaquillona">Vaquillonas</option></select>
+        <select id="dairyRepro"><option value="">Todos los estados</option><option value="p">Preñadas</option><option value="v">Vacías / sin preñez</option></select>
+        <input id="dairySearch" placeholder="Buscar caravana">
+      </div>
+      <div id="dairyKpis" class="kpi-grid"></div>
+      <div class="grid two">
+        <article class="panel"><h2>Partos por horizonte</h2><div id="dairyCalvingBands"></div></article>
+        <article class="panel"><h2>Acciones reproductivas</h2><div id="dairyActions"></div></article>
+      </div>
+      <div class="grid two">
+        <article class="panel"><h2>Estado reproductivo</h2><div id="dairyReproChart"></div></article>
+        <article class="panel"><h2>Indicadores de rodeo</h2><div id="dairyIndicators"></div></article>
+      </div>
+      <article class="panel"><div class="panel-head"><div><h2>Detalle del rodeo activo</h2><p>El detalle puede filtrarse y ordenarse por urgencia.</p></div></div><div id="dairyTable"></div></article>
+    </section>
+
+    <section id="ino" class="view">
+      <div class="page-head"><div><div class="eyebrow">INO</div><h1>Recría, vaquillonas y ganadería</h1><p>Control reproductivo de vaquillonas, novillos, engorde y traslados hacia los tambos.</p></div><button class="button primary" data-action="new-task" data-default-farm="Ino">+ Tarea en Ino</button></div>
+      <div id="inoStock" class="kpi-grid"></div>
+      <div class="grid two">
+        <article class="panel"><h2>Control reproductivo de vaquillonas</h2><div id="heiferSummary"></div></article>
+        <article class="panel"><h2>Ganadería y engorde</h2><div id="beefSummary"></div></article>
+      </div>
+      <div class="filterbar">
+        <input id="heiferSearch" placeholder="Buscar vaquillona, madre, toro u origen">
+        <select id="heiferStatus"><option value="active">Entoradas activas</option><option value="pregnant">Preñadas</option><option value="empty">Vacías</option><option value="pending">Pendientes de tacto</option><option value="due">Para tactar ahora</option><option value="all">Todo el historial</option></select>
+        <select id="heiferOrigin"><option value="">Todos los orígenes</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+      </div>
+      <article class="panel"><div class="panel-head"><div><h2>Vaquillonas</h2><p>Podés cargar o corregir tacto, fecha probable y destino.</p></div></div><div id="heiferTable"></div></article>
+      <article class="panel"><div class="panel-head"><div><h2>Movimientos de Ino</h2><p>Ingresos, cambios de categoría, ventas, muertes y traslados.</p></div><button class="button ghost compact" data-action="new-movement" data-default-farm="Ino">+ Movimiento</button></div><div id="inoMovements"></div></article>
+    </section>
+
+    <section id="hacienda" class="view">
+      <div class="page-head"><div><div class="eyebrow">INVENTARIO</div><h1>Hacienda por establecimiento y categoría</h1><p>El stock declarado se distingue del detalle individual disponible.</p></div><button class="button primary" data-action="new-animal">+ Animal</button></div>
+      <div class="filterbar">
+        <input id="animalSearch" placeholder="Buscar caravana, categoría o observación">
+        <select id="animalFarm"><option value="">Todos los establecimientos</option><option>Ino</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="animalCategory"><option value="">Todas las categorías</option></select>
+        <select id="animalState"><option value="Activo">Activos</option><option value="">Todos los estados</option><option value="Inactivo">Inactivos</option></select>
+      </div>
+      <div id="stockSummary" class="farm-grid"></div>
+      <article class="panel"><div class="panel-head"><div><h2>Detalle individual disponible</h2><p>No representa por sí solo el total de 876 animales.</p></div></div><div id="animalTable"></div></article>
+    </section>
+
+
+    <section id="trazabilidad" class="view">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">FICHA ÚNICA</div>
+          <h1>Trazabilidad del animal</h1>
+          <p>Reconstruye la historia disponible cruzando rodeo, recría, nacimientos, tareas y registros individuales.</p>
+        </div>
+      </div>
+      <div class="filterbar sticky-filter">
+        <input id="traceSearch" inputmode="numeric" placeholder="Escribí la caravana o número">
+        <select id="traceFarm">
+          <option value="">Todos los establecimientos</option>
+          <option>Ino</option><option>Ino 2</option><option>Los 3 Hnos.</option>
+        </select>
+        <button id="traceFindBtn" class="button primary">Buscar animal</button>
+        <button id="traceClearBtn" class="button ghost">Limpiar</button>
+      </div>
+      <div id="traceSuggestions"></div>
+      <div id="traceResult">
+        <div class="empty">Ingresá una caravana para reconstruir su historia.</div>
+      </div>
+    </section>
+
+    <section id="nacimientos" class="view">
+      <div class="page-head"><div><div class="eyebrow">PARTOS OCURRIDOS</div><h1>Nacimientos y supervivencia</h1><p>Vivos, muertos al parto y pérdidas durante la recría.</p></div><button class="button primary" data-action="new-birth">+ Nacimiento</button></div>
+      <div class="filterbar">
+        <select id="birthYear"></select>
+        <select id="birthFarm"><option value="">Todos los establecimientos</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="birthResult"><option value="">Todos los resultados</option><option value="live">Vivos</option><option value="dead">Muertos al parto</option><option value="rearing">Muerte en recría</option></select>
+        <input id="birthSearch" placeholder="Buscar madre, padre o caravana">
+      </div>
+      <div id="birthKpis" class="kpi-grid"></div>
+      <div class="grid two"><article class="panel"><h2>Evolución mensual</h2><div id="birthMonthly"></div></article><article class="panel"><h2>Comparación por tambo</h2><div id="birthCompare"></div></article></div>
+      <article class="panel"><h2>Detalle</h2><div id="birthTable"></div></article>
+    </section>
+
+    <section id="movimientos" class="view">
+      <div class="page-head"><div><div class="eyebrow">FLUJO DE HACIENDA</div><h1>Movimientos</h1><p>Ingresos, traslados, cambios de categoría, ventas y muertes.</p></div><button class="button primary" data-action="new-movement">+ Movimiento</button></div>
+      <div class="filterbar">
+        <select id="movementYear"></select>
+        <select id="movementFarm"><option value="">Todos los establecimientos</option><option>Ino</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="movementType"><option value="">Todos los tipos</option><option value="internal">Traslados / cambios</option><option value="sale">Ventas</option><option value="death">Muertes</option><option value="birth">Nacimientos</option></select>
+        <input id="movementSearch" placeholder="Buscar lote, destino u observación">
+      </div>
+      <div id="movementKpis" class="kpi-grid"></div>
+      <div class="grid two"><article class="panel"><h2>Movimientos por mes</h2><div id="movementMonthly"></div></article><article class="panel"><h2>Resumen del flujo</h2><div id="movementFlow"></div></article></div>
+      <article class="panel"><h2>Detalle</h2><div id="movementTable"></div></article>
+    </section>
+
+    <section id="sanidad" class="view">
+      <div class="page-head"><div><div class="eyebrow">PLAN SANITARIO</div><h1>Sanidad y vencimientos</h1><p>La agenda usa el último registro de cada tratamiento por establecimiento.</p></div><button class="button primary" data-action="new-health">+ Trabajo sanitario</button></div>
+      <div class="filterbar">
+        <input id="healthSearch" placeholder="Buscar tratamiento o categoría">
+        <select id="healthFarm"><option value="">Todos los establecimientos</option><option>Ino</option><option>Ino 2</option><option>Los 3 Hnos.</option></select>
+        <select id="healthStatus"><option value="current">Plan vigente</option><option value="due">Próximos 90 días</option><option value="overdue">Vencidos</option><option value="all">Todo el historial</option></select>
+      </div>
+      <div id="healthKpis" class="kpi-grid"></div>
+      <article class="panel"><h2>Plan sanitario</h2><div id="healthTable"></div></article>
+    </section>
+
+    <section id="datos" class="view">
+      <div class="page-head"><div><div class="eyebrow">DATOS, RESPALDO Y NUBE</div><h1>Actualizar y proteger la información</h1><p>La aplicación funciona sin señal; al volver internet, puede sincronizarse.</p></div></div>
+      <div class="grid two">
+        <article class="panel">
+          <h2>Cuenta y sincronización</h2>
+          <div id="cloudState"></div>
+          <div class="form-stack"><input id="email" type="email" placeholder="Correo"><input id="password" type="password" placeholder="Contraseña"></div>
+          <div class="button-row"><button id="loginBtn" class="button secondary">Ingresar</button><button id="signupBtn" class="button ghost">Crear usuario</button><button id="syncBtn" class="button primary">Sincronizar ahora</button><button id="logoutBtn" class="button danger ghost">Salir</button></div>
+        </article>
+        <article class="panel">
+          <h2>Respaldo completo</h2><p>Incluye registros, tareas, estados, correcciones y cierres de parto.</p>
+          <div class="button-row"><button id="exportBtn" class="button primary">Descargar respaldo</button><label class="button secondary file-button">Restaurar respaldo<input id="backupFile" type="file" accept=".json"></label></div>
+        </article>
+      </div>
+      <article class="panel">
+        <h2>Actualizar todas las planillas de OneDrive</h2>
+        <p>Tu hermano sigue cargando en sus Excel. Seleccioná las siete planillas y Campo Hoy reconocerá automáticamente qué información corresponde a cada una. La actualización se hace completa o no se hace: si falta un archivo, los datos anteriores quedan intactos.</p>
+        <div class="button-row">
+          <label class="button secondary file-button">Elegir planillas de OneDrive<input id="sourceFiles" type="file" accept=".xlsx,.xls" multiple></label>
+          <button id="importAllSourcesBtn" class="button primary">Importar las siete</button>
+          <button id="clearSourceFilesBtn" class="button ghost" type="button">Vaciar selección</button>
+        </div>
+        <p class="note">Podés elegirlas todas juntas o agregarlas de a una. Se esperan: Hacienda Total, Sanidad, Vaquillas con toro, dos Perfiles de Rodeo y dos planillas de Nacimientos.</p>
+        <div id="sourceFilesList" class="source-files-list"></div>
+        <div id="sourceImportStatus"></div>
+      </article>
+      <div class="grid two"><article class="panel"><h2>Fuentes cargadas</h2><div id="sourceCards"></div></article><article class="panel"><h2>Consistencia y auditoría</h2><div id="auditList"></div></article></div>
+    </section>
+  </main>
+  </div>
+
+  <dialog id="detailDialog" class="detail-dialog">
+    <div class="detail-shell">
+      <div class="dialog-head"><div><div id="detailEyebrow" class="eyebrow">DETALLE</div><h2 id="detailTitle">Detalle</h2></div><button type="button" class="icon-button" data-action="close-detail">×</button></div>
+      <div id="detailBody" class="detail-body"></div>
+      <div class="dialog-actions"><button type="button" class="button ghost" data-action="close-detail">Cerrar</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="editorDialog">
+    <form id="editorForm" method="dialog">
+      <div class="dialog-head"><div><div id="editorEyebrow" class="eyebrow"></div><h2 id="editorTitle"></h2></div><button type="button" class="icon-button" data-action="close-dialog">×</button></div>
+      <div id="editorFields" class="form-grid"></div>
+      <div class="dialog-actions"><button type="button" class="button ghost" data-action="close-dialog">Cancelar</button><button type="submit" class="button primary">Guardar</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="config.js"></script>
+  <script src="supabase-lite.js?v=8.6"></script>
+  <script src="app.js?v=8.6"></script>
+</body>
+</html>
