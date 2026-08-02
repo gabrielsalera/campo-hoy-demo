@@ -1,8 +1,0 @@
-CAMPO HOY 8.0 — OFFLINE SEGURO
-
-1. Publicar en el mismo sitio de Netlify.
-2. Abrir una vez con internet e ingresar con el usuario autorizado.
-3. Esperar la carga y descargar un respaldo desde Datos y nube.
-4. Luego funciona sin señal en ese dispositivo.
-
-IMPORTANTE: no borrar datos del navegador ni desinstalar la app antes de recuperar y respaldar la información.

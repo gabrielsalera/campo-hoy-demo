@@ -1,38 +1,32 @@
-# Campo Hoy
+# Campo Hoy · Demo comercial
 
-Demo comercial PWA para controlar hacienda, reproducción, nacimientos, movimientos, sanidad y tareas aun con conectividad limitada. La versión heredada 8.6 se conserva y evoluciona incrementalmente: usa IndexedDB como persistencia local y Supabase como sincronización autenticada.
+Aplicación React multipantalla para recorrer una operación agropecuaria completa con datos ficticios determinísticos. Funciona sin credenciales y guarda las cargas en IndexedDB.
 
 ## Ejecutar
 
 ```bash
-python3 -m http.server 4173
-# abrir http://localhost:4173 y elegir “Ingresar a la demo”
-npm run check
+npm install
+npm run dev
+```
+
+Controles de calidad:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
 npm run build
 ```
 
-No abra `index.html` con `file://`: el service worker y las solicitudes de datos requieren HTTP. `config.js` contiene únicamente una clave pública publicable; para otro proyecto copie `.env.example` y adapte la inyección durante el despliegue. Nunca use `service_role` en el navegador.
+## Datos y conexión opcional
 
-## Funcionalidad disponible
+La demo usa 512 animales ficticios distribuidos entre `Tambo La Esperanza` y `Establecimiento El Ombú`, con 18 meses de historia productiva. Para preparar una conexión nueva, copiar `.env.example` a `.env` y completar:
 
-- Dashboard operacional navegable, agenda y filtros con detalle.
-- Hacienda, trazabilidad individual, nacimientos, movimientos, reproducción de vaquillonas y sanidad.
-- Formularios que persisten en IndexedDB, respaldo JSON e importación de siete libros Excel.
-- PWA instalable, shell offline y sincronización autenticada idempotente por registro.
-- Acceso demo local, sin credenciales y claramente separado del entorno productivo.
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
 
-## Supabase
-
-La migración `supabase/migrations/202608020001_core.sql` crea organizaciones, establecimientos, membresías, registros, auditoría y analítica con RLS. `supabase/seed.sql` crea los establecimientos ficticios **Tambo Soutomayor** y **Campo Galisteo**. Con Supabase CLI autorizado: `supabase start`, `supabase db reset` y `supabase gen types typescript --local > database.types.ts`.
-
-## Demo y seguridad
-
-El modo demo usa exclusivamente datos ficticios locales. El login Supabase conserva sesión y habilita continuidad offline en el dispositivo. Antes de un uso productivo deben aplicarse las migraciones, crear usuarios Auth y validar las políticas con pruebas RLS. Consulte `docs/SECURITY.md` y `docs/KNOWN_LIMITATIONS.md`.
+Sin esas variables, la aplicación continúa en modo local.
 
 ## Despliegue
 
-`npm run build` genera `dist/`. `vercel.json` configura la salida, fallback SPA y revalidación del service worker. GitHub Actions ejecuta chequeo sintáctico, pruebas y build. No se afirma un despliegue público sin URL comprobada.
-
-## Documentación
-
-La especificación, arquitectura, base, sincronización, despliegue, analítica, guion comercial, limitaciones y próximos pasos están en [`docs/`](docs/).
+`npm run build` genera `dist/`. `vercel.json` configura Vite, el fallback SPA y el service worker. Las capturas verificadas están en `docs/screenshots/`.

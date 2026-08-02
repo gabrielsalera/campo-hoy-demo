@@ -1,14 +1,44 @@
 {
   "name": "campo-hoy-demo",
   "private": true,
-  "version": "8.7.0",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "check": "node --check app.js && node --check supabase-lite.js && node --check sw.js && node --test",
-    "test": "node --test",
-    "build": "node scripts/build.mjs"
+    "dev": "vite",
+    "generate:icons": "node scripts/generate-icons.mjs",
+    "build": "tsc -b && vite build",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc -b --pretty false",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.57.4",
+    "lucide-react": "0.468.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "7.18.2",
+    "recharts": "2.15.4",
+    "read-excel-file": "9.3.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.35.0",
+    "@playwright/test": "1.62.1",
+    "@types/react": "18.3.24",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "4.7.0",
+    "autoprefixer": "10.4.21",
+    "eslint": "9.35.0",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "eslint-plugin-react-refresh": "0.4.20",
+    "globals": "16.3.0",
+    "postcss": "8.5.25",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.9.2",
+    "typescript-eslint": "8.42.0",
+    "vite": "7.3.6"
   },
   "engines": {
     "node": ">=20"
-  },
-  "type": "module"
+  }
 }
